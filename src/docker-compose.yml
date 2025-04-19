@@ -1,0 +1,76 @@
+services:
+  orderservice:
+    image: ${DOCKER_REGISTRY-}orderservice
+    container_name: orderservice
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  portfolioservice:
+    image: ${DOCKER_REGISTRY-}portfolioservice
+    container_name: portfolioservice
+    build:
+      context: .
+      dockerfile: PortfolioService/Dockerfile
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  priceservice:
+    image: ${DOCKER_REGISTRY-}priceservice
+    container_name: priceservice
+    build:
+      context: .
+      dockerfile: PriceService/Dockerfile
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./../containers/postgres_data:/var/lib/postgresql/data
+      - ./../init-db:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: plamenx93@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+    volumes:
+      - ./../containers/pgadmin-data:/var/lib/pgadmin
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "16686:16686"
+
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    container_name: apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    depends_on:
+      - orderservice
+      - portfolioservice
