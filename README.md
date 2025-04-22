@@ -13,7 +13,7 @@ A .NET microservices-based stock trading simulator with:
 - MassTransit + RabbitMQ
 - PostgreSQL
 - Docker + Docker Compose
-- OpenTelemetry + Jagger
+- OpenTelemetry + Jaeger
 
 ### Services
 
@@ -34,3 +34,5 @@ docker-compose up --build
 - http://localhost:5000/orderservice/swagger
 - http://localhost:5000/portfolioservice/swagger
 - /api/order and /api/portfolio exposed trough the API Gateway only
+- RabbitMQ UI: http://localhost:15672
+- Jaeger Tracing: http://localhost:16686
