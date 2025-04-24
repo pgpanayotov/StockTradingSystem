@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderService.Data;
 using OrderService.Models;
 using OrderService.Services;
@@ -58,6 +59,13 @@ namespace OrderService.Controllers
             });
 
             return Ok(order);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrders()
+        {
+            var orders = await _db.Orders.AsNoTracking().ToListAsync();
+            return Ok(orders);
         }
     }
 

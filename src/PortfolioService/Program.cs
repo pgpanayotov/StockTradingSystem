@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using MassTransit;
 using MassTransit.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +67,11 @@ namespace PortfolioService
                     cfg.Message<OrderExecuted>(x => x.SetEntityName("order.executed"));
 
                 });
+            });
+
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
             builder.Services.AddControllers();
